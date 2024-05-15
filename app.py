@@ -8,55 +8,59 @@ jsnfile = 'data.json'
 @app.route('/', methods=['GET', "POST"])
 def index():
     with open(jsnfile, 'r') as ps:
-        usuarios = json.load(ps)
-    return render_template("index.html",  usuarios=usuarios)
+        tareas = json.load(ps)
+    return render_template("index.html",  tareas=tareas)
 
-@app.route("/add_usuario", methods = ['GET', 'POST'])
-def addFilm():
+@app.route("/add_tarea", methods = ['GET', 'POST'])
+def addTarea():
     if request.method == 'GET':
-        return render_template('add_usuario.html', usuario={})
+        return render_template('add_tarea.html',tarea={})
     if request.method == 'POST':
-        id_usuario = request.form["id_usuario"]
-        nombre_usuario = request.form["nombre_usuario"]
-        contrasena_usuario = request.form["contrasena_usuario"]
-        tipo_usuario = request.form["tipo_usuario"]
+        id_tarea = request.form["id_tarea"]
+        nombre_tarea = request.form["nombre_tarea"]
+        fecha_inicio = request.form["fecha_inicio"]
+        fecha_fin = request.form["fecha_fin"]
+        fecha_limite = request.form["fecha_limite"]
+        estado_tarea = request.form["estado_tarea"]
         with open(jsnfile, 'r+') as ps:
-            usuarios = json.load(ps)
-        usuarios.append({"id_usuario": id_usuario, "nombre_usuario": nombre_usuario, "contrasena_usuario": contrasena_usuario, "tipo_usuario": tipo_usuario})
+            tareas = json.load(ps)
+        tareas.append({"id_tarea": id_tarea, "nombre_tarea": nombre_tarea, "fecha_inicio": fecha_inicio,"fecha_fin": fecha_fin,"fecha_limite": fecha_limite ,"estado_tarea": estado_tarea})
         with open(jsnfile, 'w') as ps:
-            json.dump(usuarios, ps)
+            json.dump(tareas, ps)
         return redirect('/')
     
 
-@app.route('/update_usuario/<string:id_usuario>',methods = ['GET','POST'])
-def update_usuario(id_usuario):
+@app.route('/update_tarea/<string:id_tarea>',methods = ['GET','POST'])
+def update_tarea(id_tarea):
     with open(jsnfile) as ps:
-        usuarios = json.load(ps)
+        tareas = json.load(ps)
     if request.method == 'GET':
-        usuario = [x for x in usuarios if x['id_usuario'] == id_usuario][0]
-        return render_template("add_usuario.html", usuario=usuario)
+        tarea = [x for x in tarea if x['id_tarea'] == id_tarea][0]
+        return render_template("add_tarea.html", tarea=tarea)
     if request.method == 'POST':
-        for usuario in usuarios:
-            if(usuario['id_usuario'] == id_usuario):
-                usuario['nombre_usuario'] = request.form["nombre_usuario"]
-                usuario['contrasena_usuario'] = request.form["contrasena_usuario"]
-                usuario['tipo_usuario'] = request.form["tipo_usuario"]
+        for tarea in tareas:
+            if(tarea['id_tarea'] == id_tarea):
+                tarea['nombre_tarea'] = request.form["nombre_tarea"]
+                tarea['fecha_inicio'] = request.form["fecha_inicio"]
+                tarea['fecha_fin'] = request.form["fecha_fin"]
+                tarea['fecha_fecha_limite'] = request.form["fecha_limite"]
+                tarea['estado_tarea'] = request.form["estado_tarea"]
                 break
         with open(jsnfile, 'w') as ps:
-            json.dump(usuarios, ps)
+            json.dump(tareas, ps)
         return redirect('/')
 
 
-@app.route('/delete_usuario/<string:id_usuario>')
-def delete_usuaario(id_usuario):
+@app.route('/delete_tarea/<string:id_tarea>')
+def delete_tarea(id_tarea):
     with open(jsnfile) as ps:
-        usuarios = json.load(ps)
-    new_user_list = []
-    for usuario in usuarios:
-        if(usuario['id_usuario'] != id_usuario):
-            new_user_list.append(usuario)
+        tareas = json.load(ps)
+    new_tarea_list = []
+    for tarea in tareas:
+        if(tarea['id_tarea'] != id_tarea):
+            new_tarea_list.append(tarea)
     with open(jsnfile, 'w') as uw:
-        json.dump(new_user_list, uw)
+        json.dump(new_tarea_list, uw)
     return redirect('/')
 
 if __name__ == "__main__":
